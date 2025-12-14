@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:ToDoMauiClient.ViewModels"
+             x:Class="ToDoMauiClient.Views.RegisterPage"
+             Title="Регистрация">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="30" Spacing="20" VerticalOptions="Center">
+
+            <Label Text="Создать аккаунт"
+                   FontSize="32"
+                   HorizontalOptions="Center"
+                   FontAttributes="Bold" />
+
+            <Entry Placeholder="Имя пользователя"
+                   Text="{Binding Username}" />
+
+            <Entry Placeholder="Email"
+                   Text="{Binding Email}"
+                   Keyboard="Email" />
+
+            <Entry Placeholder="Пароль (минимум 8 символов)"
+                   Text="{Binding Password}"
+                   IsPassword="True" />
+
+            <Button Text="Зарегистрироваться"
+                    Command="{Binding RegisterCommand}"
+                    IsEnabled="{Binding IsNotBusy}" />
+
+            <Button Text="Уже есть аккаунт? Войти"
+                    Command="{Binding GoToLoginCommand}"
+                    BackgroundColor="Transparent"
+                    TextColor="Blue" />
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                               IsVisible="{Binding IsBusy}"
+                               Color="Blue" />
+
+            <Label Text="{Binding ErrorMessage}"
+                   TextColor="Red"
+                   IsVisible="{Binding HasError}"
+                   HorizontalOptions="Center" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

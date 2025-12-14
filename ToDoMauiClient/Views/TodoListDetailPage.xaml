@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:ToDoMauiClient.ViewModels"
+             x:Class="ToDoMauiClient.Views.TodoListDetailPage"
+             xmlns:dto="clr-namespace:ToDoMauiClient.DTO"
+             Title="{Binding ListTitle}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Заголовок и кнопки -->
+        <HorizontalStackLayout Grid.Row="0"
+                               Padding="20"
+                               HorizontalOptions="End">
+            <Label Text="{Binding ListTitle}"
+                   FontSize="24"
+                   FontAttributes="Bold"
+                   VerticalOptions="Center"
+                   HorizontalOptions="StartAndExpand" />
+
+            <Button Text="Обновить"
+                    Command="{Binding RefreshCommand}" />
+
+            <Button Text="+ Задача"
+                    Command="{Binding AddTaskCommand}"
+                    FontAttributes="Bold" />
+        </HorizontalStackLayout>
+
+        <!-- Список задач -->
+        <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding Tasks}"
+                        SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="dto:TodoItemDTO">
+                    <SwipeView>
+                        <SwipeView.RightItems>
+                            <SwipeItems>
+                                <SwipeItem Text="Удалить"
+                               BackgroundColor="Red"
+                               Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TodoListDetailViewModel}}, Path=DeleteTaskCommand}"
+                               CommandParameter="{Binding}" />
+                            </SwipeItems>
+                        </SwipeView.RightItems>
+
+                        <Grid Padding="15" ColumnDefinitions="Auto,*,Auto">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TodoListDetailViewModel}}, Path=ToggleCompleteCommand}"
+                                          CommandParameter="{Binding}" />
+                            </Grid.GestureRecognizers>
+
+                            <!-- Чекбокс выполненности -->
+                            <Image Source="{Binding IsCompleted, Converter={StaticResource BoolToCheckImageConverter}}"
+                       WidthRequest="30"
+                       HeightRequest="30"
+                       VerticalOptions="Center" />
+
+                            <!-- Текст задачи -->
+                            <VerticalStackLayout Grid.Column="1" Spacing="5" VerticalOptions="Center">
+                                <Label Text="{Binding Title}"
+                           FontSize="18"
+                           FontAttributes="{Binding IsCompleted, Converter={StaticResource BoolToBoldConverter}}" />
+                                <Label Text="{Binding Description}"
+                           FontSize="14"
+                           TextColor="Gray"
+                           IsVisible="{Binding Description, Converter={StaticResource StringNotEmptyConverter}}" />
+                                <HorizontalStackLayout Spacing="10">
+                                    <Label Text="{Binding DueDate, StringFormat='Срок: {0:dd.MM.yyyy}', Converter={StaticResource NullToEmptyConverter}}"
+                               FontSize="12"
+                               TextColor="{Binding DueDate, Converter={StaticResource DueDateColorConverter}}" />
+                                    <Label Text="{Binding Priority}"
+                               FontSize="12"
+                               TextColor="{Binding Priority, Converter={StaticResource PriorityColorConverter}}" />
+                                </HorizontalStackLayout>
+                            </VerticalStackLayout>
+
+                            <!-- Кнопка редактирования -->
+                            <Button Grid.Column="2"
+                        Text="✎"
+                        FontSize="20"
+                        BackgroundColor="Transparent"
+                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TodoListDetailViewModel}}, Path=EditTaskCommand}"
+                        CommandParameter="{Binding}" />
+                        </Grid>
+                    </SwipeView>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+            <CollectionView.EmptyView>
+                <VerticalStackLayout Padding="50" Spacing="10">
+                    <Label Text="Нет задач в этом списке"
+                           FontSize="20"
+                           HorizontalOptions="Center" />
+                    <Label Text="Нажмите '+ Задача' чтобы добавить первую"
+                           FontSize="16"
+                           TextColor="Gray"
+                           HorizontalOptions="Center" />
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+        </CollectionView>
+
+        <!-- Индикатор загрузки -->
+        <ActivityIndicator Grid.RowSpan="2"
+                           IsRunning="{Binding IsBusy}"
+                           IsVisible="{Binding IsBusy}"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center" />
+
+        <!-- Модальное окно для создания/редактирования задачи -->
+        <Frame IsVisible="{Binding IsModalVisible}"
+               BackgroundColor="{StaticResource Background}"
+               Padding="20"
+               CornerRadius="20"
+               HasShadow="True"
+               VerticalOptions="Center"
+               HorizontalOptions="Center"
+               WidthRequest="350">
+
+            <VerticalStackLayout Spacing="15">
+                <Label Text="{Binding ModalTitle}"
+                       FontSize="22"
+                       HorizontalOptions="Center" />
+
+                <Entry Placeholder="Название задачи *"
+                       Text="{Binding EditingTask.Title}" />
+
+                <Editor Placeholder="Описание"
+                        Text="{Binding EditingTask.Description}"
+                        HeightRequest="100"
+                        AutoSize="TextChanges" />
+
+                <DatePicker Date="{Binding EditingTask.DueDate}"
+                            Format="dd.MM.yyyy"
+                            MinimumDate="{Binding Today}" />
+
+                <Picker Title="Приоритет"
+                        ItemsSource="{Binding PriorityItems}"
+                        SelectedItem="{Binding EditingTask.Priority}" />
+
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                    <Button Grid.Column="0"
+                            Text="Сохранить"
+                            Command="{Binding SaveTaskCommand}"
+                            BackgroundColor="{StaticResource Primary}" />
+
+                    <Button Grid.Column="1"
+                            Text="Отмена"
+                            Command="{Binding CloseModalCommand}"
+                            BackgroundColor="{StaticResource Secondary}" />
+                </Grid>
+            </VerticalStackLayout>
+        </Frame>
+    </Grid>
+</ContentPage>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:ToDoMauiClient.ViewModels"
+             x:Class="ToDoMauiClient.Views.TodoListsPage"
+             Title="Мои списки задач">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Кнопка добавления и обновления -->
+        <HorizontalStackLayout Grid.Row="0"
+                               Padding="20"
+                               HorizontalOptions="End">
+            <Button Text="Обновить"
+                    Command="{Binding RefreshCommand}"
+                    Style="{StaticResource ButtonSecondary}" />
+
+            <Button Text="Добавить список"
+                    Command="{Binding AddListCommand}"
+                    Style="{StaticResource ButtonPrimary}" />
+            <Button Text="Выйти"
+                    Command="{Binding LogoutCommand}"
+                    TextColor="Red" />  
+        </HorizontalStackLayout>
+
+        <!-- Список списков -->
+        <CollectionView Grid.Row="1"
+                ItemsSource="{Binding TodoLists}"
+                SelectionMode="Single"
+                SelectionChanged="OnSelectionChanged">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <SwipeView>
+                        <SwipeView.LeftItems>
+                            <SwipeItems>
+                                <SwipeItem Text="Удалить"
+                                   BackgroundColor="Red"
+                                   Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TodoListsViewModel}}, Path=DeleteListCommand}"
+                                   CommandParameter="{Binding}" />
+                            </SwipeItems>
+                        </SwipeView.LeftItems>
+
+                        <Grid Padding="15" ColumnDefinitions="*,Auto">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <Label Grid.Row="0"
+                           Text="{Binding Title}"
+                           FontSize="18"
+                           FontAttributes="Bold" />
+
+                            <Label Grid.Row="1"
+                           Text="{Binding Description}"
+                           FontSize="14"
+                           TextColor="Gray"
+                           IsVisible="{Binding Description, Converter={StaticResource StringNotEmptyConverter}}" />
+
+                            <Label Grid.Column="1"
+                           Grid.RowSpan="2"
+                           Text="{Binding Items.Count, StringFormat='{0} задач'}"
+                           VerticalOptions="Center"
+                           FontSize="14" />
+                        </Grid>
+                    </SwipeView>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+            <CollectionView.EmptyView>
+                <VerticalStackLayout Padding="50">
+                    <Label Text="Нет списков задач"
+                           FontSize="20"
+                           HorizontalOptions="Center" />
+                    <Label Text="Нажмите '+' чтобы создать первый список"
+                           FontSize="16"
+                           TextColor="Gray"
+                           HorizontalOptions="Center" />
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+        </CollectionView>
+
+        <!-- Индикатор загрузки -->
+        <ActivityIndicator Grid.RowSpan="2"
+                           IsRunning="{Binding IsBusy}"
+                           IsVisible="{Binding IsBusy}"
+                           Color="Blue"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center" />
+    </Grid>
+</ContentPage>
