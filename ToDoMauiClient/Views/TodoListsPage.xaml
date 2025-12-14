@@ -14,17 +14,23 @@
         <!-- Кнопка добавления и обновления -->
         <HorizontalStackLayout Grid.Row="0"
                                Padding="20"
+                               Spacing="10"
                                HorizontalOptions="End">
+            
+            <Button Text="Профиль"
+                    Command="{Binding GoToProfileCommand}" />
+            
             <Button Text="Обновить"
                     Command="{Binding RefreshCommand}"
                     Style="{StaticResource ButtonSecondary}" />
-
+            
             <Button Text="Добавить список"
                     Command="{Binding AddListCommand}"
                     Style="{StaticResource ButtonPrimary}" />
+            
             <Button Text="Выйти"
                     Command="{Binding LogoutCommand}"
-                    TextColor="Red" />  
+                    TextColor="Red" />
         </HorizontalStackLayout>
 
         <!-- Список списков -->
@@ -35,38 +41,39 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <SwipeView>
-                        <SwipeView.LeftItems>
+                        <SwipeView.RightItems>
                             <SwipeItems>
-                                <SwipeItem Text="Удалить"
-                                   BackgroundColor="Red"
-                                   Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TodoListsViewModel}}, Path=DeleteListCommand}"
-                                   CommandParameter="{Binding}" />
+                                <SwipeItem Text="Удалить" BackgroundColor="Red"
+                                           Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TodoListsViewModel}}, Path=DeleteListCommand}"
+                                           CommandParameter="{Binding}" />
                             </SwipeItems>
-                        </SwipeView.LeftItems>
+                        </SwipeView.RightItems>
 
-                        <Grid Padding="15" ColumnDefinitions="*,Auto">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
+                        <Border Stroke="{StaticResource Primary}" StrokeThickness="1" Padding="10">
+                            <Grid Padding="15" ColumnDefinitions="*,Auto">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
 
-                            <Label Grid.Row="0"
-                           Text="{Binding Title}"
-                           FontSize="18"
-                           FontAttributes="Bold" />
+                               <Label Grid.Row="0"
+                               Text="{Binding Title}"
+                               FontSize="18"
+                               FontAttributes="Bold" />
 
-                            <Label Grid.Row="1"
-                           Text="{Binding Description}"
-                           FontSize="14"
-                           TextColor="Gray"
-                           IsVisible="{Binding Description, Converter={StaticResource StringNotEmptyConverter}}" />
+                               <Label Grid.Row="1"
+                               Text="{Binding Description}"
+                               FontSize="14"
+                               TextColor="Gray"
+                               IsVisible="{Binding Description, Converter={StaticResource StringNotEmptyConverter}}" />
 
-                            <Label Grid.Column="1"
-                           Grid.RowSpan="2"
-                           Text="{Binding Items.Count, StringFormat='{0} задач'}"
-                           VerticalOptions="Center"
-                           FontSize="14" />
-                        </Grid>
+                               <Label Grid.Column="1"
+                               Grid.RowSpan="2"
+                               Text="{Binding Items.Count, StringFormat='{0} задач'}"
+                               VerticalOptions="Center"
+                               FontSize="14" />
+                            </Grid>
+                        </Border>
                     </SwipeView>
                 </DataTemplate>
             </CollectionView.ItemTemplate>

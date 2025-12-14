@@ -126,4 +126,10 @@ public partial class TodoListsViewModel : ObservableObject
         }
         await Shell.Current.GoToAsync("///login");
     }
+
+    [RelayCommand]
+    private async Task GoToProfile()
+    {
+        await Shell.Current.GoToAsync("///profile");
+    }
 }

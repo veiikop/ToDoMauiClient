@@ -38,6 +38,9 @@ namespace ToDoMauiClient
             builder.Services.AddTransient<TodoListDetailPage>();
             builder.Services.AddTransient<TodoListDetailViewModel>();
 
+            builder.Services.AddTransient<ProfilePage>();
+            builder.Services.AddTransient<ProfileViewModel>();
+
             return builder.Build();
         }
     }

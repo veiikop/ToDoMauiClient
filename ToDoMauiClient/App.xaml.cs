@@ -1,12 +1,12 @@
-﻿namespace ToDoMauiClient
-{
-    public partial class App : Application
+﻿    namespace ToDoMauiClient
     {
-        public App()
+        public partial class App : Application
         {
-            InitializeComponent();
-            MainPage = new AppShell();
-        }
+            public App()
+            {
+                InitializeComponent();
+                MainPage = new AppShell();
+            }
 
+        }
     }
-}

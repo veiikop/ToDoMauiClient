@@ -15,16 +15,18 @@
         <!-- Заголовок и кнопки -->
         <HorizontalStackLayout Grid.Row="0"
                                Padding="20"
-                               HorizontalOptions="End">
+                               Spacing="10">
+            <Button Text="Назад"
+                    Command="{Binding GoBackCommand}" />
+            
             <Label Text="{Binding ListTitle}"
-                   FontSize="24"
-                   FontAttributes="Bold"
+                   FontSize="24" FontAttributes="Bold"
                    VerticalOptions="Center"
                    HorizontalOptions="StartAndExpand" />
-
+            
             <Button Text="Обновить"
                     Command="{Binding RefreshCommand}" />
-
+            
             <Button Text="+ Задача"
                     Command="{Binding AddTaskCommand}"
                     FontAttributes="Bold" />
@@ -36,6 +38,9 @@
                         SelectionMode="None">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="dto:TodoItemDTO">
+                    <Border Stroke="{StaticResource Primary}"
+                            StrokeThickness="1"
+                            Padding="10">
                     <SwipeView>
                         <SwipeView.RightItems>
                             <SwipeItems>
@@ -79,13 +84,15 @@
 
                             <!-- Кнопка редактирования -->
                             <Button Grid.Column="2"
-                        Text="✎"
-                        FontSize="20"
-                        BackgroundColor="Transparent"
-                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TodoListDetailViewModel}}, Path=EditTaskCommand}"
-                        CommandParameter="{Binding}" />
-                        </Grid>
+                            Text="✎"
+                            TextColor="Gray"
+                            FontSize="40"
+                            BackgroundColor="Transparent"
+                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TodoListDetailViewModel}}, Path=EditTaskCommand}"
+                            CommandParameter="{Binding}" />
+                            </Grid>
                     </SwipeView>
+                        </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
 
@@ -139,7 +146,19 @@
                 <Picker Title="Приоритет"
                         ItemsSource="{Binding PriorityItems}"
                         SelectedItem="{Binding EditingTask.Priority}" />
+                
+                <Switch IsToggled="{Binding EditingTask.IsCompleted}"
+                        HorizontalOptions="Center" />
+                
+                <Label Text="Выполнено"
+                       HorizontalOptions="Center" />
 
+                <!-- Крестик закрытия -->
+                <Button Text="✕"
+                        Command="{Binding CloseModalCommand}"
+                        HorizontalOptions="End"
+                        BackgroundColor="Transparent" />
+                
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
                     <Button Grid.Column="0"
                             Text="Сохранить"

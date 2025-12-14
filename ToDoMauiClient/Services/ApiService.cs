@@ -188,6 +188,8 @@ public class ApiService : IApiService
         await SendRequestAsync<object>(HttpMethod.Delete, $"/TodoLists/{id}");
         return true;
     }
+    public async Task<TodoListDTO> GetTodoListByIdAsync(int id)
+    => await SendRequestAsync<TodoListDTO>(HttpMethod.Get, $"/TodoLists/{id}");
 
     // ==================== ЗАДАЧИ ====================
 

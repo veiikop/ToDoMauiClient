@@ -19,6 +19,7 @@ namespace ToDoMauiClient.Services
         Task<TodoListDTO> CreateTodoListAsync(CreateTodoListDTO dto);
         Task<TodoListDTO?> UpdateTodoListAsync(int id, CreateTodoListDTO dto);
         Task<bool> DeleteTodoListAsync(int id);
+        Task<TodoListDTO> GetTodoListByIdAsync(int id);
 
         // Todo Items
         Task<List<TodoItemDTO>> GetTodoItemsByListIdAsync(int todoListId);
@@ -28,5 +29,8 @@ namespace ToDoMauiClient.Services
 
         // Профиль
         Task<UserDTO> GetCurrentUserProfileAsync();
+        
+        // очищаем токен
+        void ClearTokens();
     }
 }

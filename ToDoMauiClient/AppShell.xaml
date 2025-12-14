@@ -19,4 +19,6 @@
     <ShellContent Route="todolistdetail" 
               ContentTemplate="{DataTemplate views:TodoListDetailPage}" />
 
+    <ShellContent Route="profile" ContentTemplate="{DataTemplate views:ProfilePage}" />
+
 </Shell>

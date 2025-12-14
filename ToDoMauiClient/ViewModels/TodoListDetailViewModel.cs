@@ -40,6 +40,9 @@ public partial class TodoListDetailViewModel : ObservableObject
     [ObservableProperty]
     private bool isNewTask = true;
 
+    [ObservableProperty]
+    private TodoListDTO currentList = new();
+
     public DateTime Today => DateTime.Today;
 
     public List<Priority> PriorityItems => Enum.GetValues(typeof(Priority)).Cast<Priority>().ToList();
@@ -69,9 +72,20 @@ public partial class TodoListDetailViewModel : ObservableObject
             return;
         }
 
-        ListTitle = $"Список задач #{ListId}";
+        IsBusy = true;
 
-        await LoadTasksAsync();
+        try
+        {
+            currentList = await _apiService.GetTodoListByIdAsync(ListId);
+            ListTitle = currentList.Title ?? "Список задач";
+            await LoadTasksAsync();
+        }
+        catch
+        {
+            await Application.Current?.MainPage?.DisplayAlert("Ошибка", "Некорректный ID списка", "OK");
+            return;
+        }
+        finally { IsBusy = false; }
     }
 
     private async Task LoadTasksAsync()
@@ -111,7 +125,11 @@ public partial class TodoListDetailViewModel : ObservableObject
         EditingTask = new TodoItemDTO
         {
             TodoListId = ListId,
-            Priority = Priority.Medium
+            Priority = Priority.Medium,
+            Title = string.Empty,         // явно пусто
+            Description = string.Empty,
+            DueDate = null,
+            IsCompleted = false
         };
         IsModalVisible = true;
     }
@@ -123,38 +141,48 @@ public partial class TodoListDetailViewModel : ObservableObject
 
         IsNewTask = false;
         ModalTitle = "Редактировать задачу";
+
+        // Важно: создаём НОВЫЙ объект и копируем ВСЕ поля
         EditingTask = new TodoItemDTO
         {
             Id = task.Id,
-            Title = task.Title,
-            Description = task.Description,
+            Title = task.Title ?? string.Empty,           // на всякий случай защита от null
+            Description = task.Description ?? string.Empty,
             DueDate = task.DueDate,
             Priority = task.Priority,
             IsCompleted = task.IsCompleted,
-            TodoListId = ListId
+            TodoListId = ListId,
+            CreatedAt = task.CreatedAt,
+            CompletedAt = task.CompletedAt
         };
+
         IsModalVisible = true;
     }
 
     [RelayCommand]
     private async Task SaveTask()
     {
-        if (string.IsNullOrWhiteSpace(EditingTask.Title))
+        // Строгая проверка ДО всего
+        if (EditingTask == null || string.IsNullOrWhiteSpace(EditingTask.Title))
         {
-            await Application.Current?.MainPage?.DisplayAlert("Ошибка", "Введите название задачи", "OK");
+            await Application.Current?.MainPage?.DisplayAlert("Ошибка", "Введите название задачи!", "OK");
             return;
         }
 
         IsBusy = true;
         try
         {
+            var dueDateUtc = EditingTask.DueDate.HasValue
+                ? DateTime.SpecifyKind(EditingTask.DueDate.Value, DateTimeKind.Utc)
+                : (DateTime?)null;
+
             if (IsNewTask)
             {
                 var created = await _apiService.CreateTodoItemAsync(new CreateTodoItemDTO
                 {
-                    Title = EditingTask.Title,
-                    Description = EditingTask.Description,
-                    DueDate = EditingTask.DueDate,
+                    Title = EditingTask.Title.Trim(),
+                    Description = EditingTask.Description?.Trim(),
+                    DueDate = dueDateUtc,
                     Priority = EditingTask.Priority,
                     TodoListId = ListId
                 });
@@ -163,14 +191,17 @@ public partial class TodoListDetailViewModel : ObservableObject
             }
             else
             {
-                var updated = await _apiService.UpdateTodoItemAsync(EditingTask.Id, new UpdateTodoItemDTO
+                // Для обновления отправляем Title всегда — он проверен выше
+                var updateDto = new UpdateTodoItemDTO
                 {
-                    Title = EditingTask.Title,
-                    Description = EditingTask.Description,
-                    DueDate = EditingTask.DueDate,
+                    Title = EditingTask.Title.Trim(),
+                    Description = EditingTask.Description?.Trim(),
+                    DueDate = dueDateUtc,
                     Priority = EditingTask.Priority,
                     IsCompleted = EditingTask.IsCompleted
-                });
+                };
+
+                var updated = await _apiService.UpdateTodoItemAsync(EditingTask.Id, updateDto);
 
                 if (updated != null)
                 {
@@ -187,7 +218,7 @@ public partial class TodoListDetailViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            await Application.Current?.MainPage?.DisplayAlert("Ошибка", "Не удалось сохранить задачу", "OK");
+            await Application.Current?.MainPage?.DisplayAlert("Ошибка", $"Не удалось сохранить: {ex.Message}", "OK");
         }
         finally
         {
@@ -203,9 +234,12 @@ public partial class TodoListDetailViewModel : ObservableObject
         IsBusy = true;
         try
         {
+            // отправляем title чтоб сервер не пытался обнулить его
             var updated = await _apiService.UpdateTodoItemAsync(task.Id, new UpdateTodoItemDTO
             {
-                IsCompleted = !task.IsCompleted
+                IsCompleted = !task.IsCompleted,
+                Title = task.Title,
+                Description = task.Description
             });
 
             if (updated != null)
@@ -218,7 +252,7 @@ public partial class TodoListDetailViewModel : ObservableObject
                 }
             }
         }
-        catch
+        catch (Exception ex)
         {
             await Application.Current?.MainPage?.DisplayAlert("Ошибка", "Не удалось обновить статус", "OK");
         }
@@ -259,5 +293,11 @@ public partial class TodoListDetailViewModel : ObservableObject
     {
         IsModalVisible = false;
         EditingTask = null;
+    }
+
+    [RelayCommand]
+    private async Task GoBack()
+    {
+        await Shell.Current.GoToAsync("..");
     }
 }
