@@ -65,9 +65,18 @@ public partial class RegisterViewModel : ObservableObject
 
             var response = await _apiService.RegisterAsync(request);
 
+            // После успешной регистрации
             if (response.Success)
             {
-                // После успешной регистрации сразу переходим на списки задач
+                // Сохраняем имя пользователя
+                Preferences.Set("Username", response.User.Username);
+
+                // Обновляем информацию в AppShell
+                if (Application.Current.MainPage is AppShell shell)
+                {
+                    shell.UpdateUserProfile(response.User.Username);
+                }
+
                 await Shell.Current.GoToAsync("///todolists");
             }
             else

@@ -53,10 +53,18 @@ public partial class LoginViewModel : ObservableObject
 
             var response = await _apiService.LoginAsync(request);
 
+            // После успешного логина
             if (response.Success)
             {
-                // Сохраняем токены (пока просто в ApiService, потом добавим Preferences)
-                // Переходим на главную страницу со списками
+                // Сохраняем имя пользователя
+                Preferences.Set("Username", response.User.Username);
+
+                // Обновляем информацию в AppShell
+                if (Application.Current.MainPage is AppShell shell)
+                {
+                    shell.UpdateUserProfile(response.User.Username);
+                }
+
                 await Shell.Current.GoToAsync("///todolists");
             }
             else

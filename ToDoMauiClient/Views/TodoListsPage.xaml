@@ -11,33 +11,40 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <!-- Кнопка добавления и обновления -->
-        <HorizontalStackLayout Grid.Row="0"
-                               Padding="20"
-                               Spacing="10"
-                               HorizontalOptions="End">
-            
-            <Button Text="Профиль"
-                    Command="{Binding GoToProfileCommand}" />
-            
-            <Button Text="Обновить"
-                    Command="{Binding RefreshCommand}"
-                    Style="{StaticResource ButtonSecondary}" />
-            
-            <Button Text="Добавить список"
-                    Command="{Binding AddListCommand}"
-                    Style="{StaticResource ButtonPrimary}" />
-            
-            <Button Text="Выйти"
-                    Command="{Binding LogoutCommand}"
-                    TextColor="Red" />
-        </HorizontalStackLayout>
+        <!-- Прокручиваемая панель кнопок -->
+        <ScrollView Grid.Row="0" 
+                    Orientation="Horizontal" 
+                    HorizontalScrollBarVisibility="Never"
+                    VerticalOptions="Center">
+            <HorizontalStackLayout Padding="15"
+                                   Spacing="10"
+                                   HorizontalOptions="Start">
+
+                <Button Text="Профиль"
+                        Command="{Binding GoToProfileCommand}"
+                        WidthRequest="100" />
+
+                <Button Text="Обновить"
+                        Command="{Binding RefreshCommand}"
+                        WidthRequest="100" />
+
+                <Button Text="Добавить список"
+                        Command="{Binding AddListCommand}"
+                        WidthRequest="150" />
+
+                <Button Text="Выйти"
+                        Command="{Binding LogoutCommand}"
+                        TextColor="Red"
+                        WidthRequest="100" />
+
+            </HorizontalStackLayout>
+        </ScrollView>
+
 
         <!-- Список списков -->
         <CollectionView Grid.Row="1"
                 ItemsSource="{Binding TodoLists}"
                 SelectionMode="None">
-            <!-- Убрали SelectionMode и SelectionChanged -->
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <SwipeView>

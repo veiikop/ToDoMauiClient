@@ -5,20 +5,84 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:ToDoMauiClient"
     xmlns:views="clr-namespace:ToDoMauiClient.Views"
-    Title="ToDoMauiClient">
+    xmlns:vm="clr-namespace:ToDoMauiClient.ViewModels"
+    Title="ToDoMauiClient"
+    FlyoutBehavior="Flyout">
 
-    <!-- Стартовая страница — логин -->
-    <FlyoutItem Title="Вход" Route="login">
-        <ShellContent Route="login" ContentTemplate="{DataTemplate views:LoginPage}" />
+    <!-- Боковое меню (Flyout) -->
+    <Shell.FlyoutHeader>
+        <Grid HeightRequest="150" BackgroundColor="{StaticResource Primary}">
+            <VerticalStackLayout Padding="20" VerticalOptions="Center">
+                <Label Text="To-Do List" 
+                       FontSize="24" 
+                       FontAttributes="Bold" 
+                       TextColor="White" />
+                <Label x:Name="UserNameLabel"
+                       FontSize="16" 
+                       TextColor="White" 
+                       Text="Гость" />
+            </VerticalStackLayout>
+        </Grid>
+    </Shell.FlyoutHeader>
+
+    <!-- Footer меню -->
+    <Shell.FlyoutFooter>
+        <Grid Padding="10">
+            <VerticalStackLayout Spacing="10">
+
+                <!-- Кнопка выхода из аккаунта -->
+                <Button x:Name="LogoutButton"
+                        Text="Выйти из аккаунта" 
+                        BackgroundColor="Transparent"
+                        TextColor="{StaticResource Primary}"
+                        BorderColor="{StaticResource Primary}"
+                        BorderWidth="1"
+                        CornerRadius="10"
+                        HeightRequest="45"
+                        Clicked="OnLogoutClicked"
+                        IsVisible="False" />
+
+                <!-- Кнопка выхода из приложения -->
+                <Button x:Name="ExitAppButton"
+                        Text="Выйти из приложения" 
+                        BackgroundColor="Transparent"
+                        TextColor="Red"
+                        BorderColor="Red"
+                        BorderWidth="1"
+                        CornerRadius="10"
+                        HeightRequest="45"
+                        Clicked="OnExitAppClicked" />
+
+                <!-- Информация о версии -->
+                <Label Text="ToDo App v1.0"
+                       FontSize="12"
+                       TextColor="Gray"
+                       HorizontalOptions="Center"
+                       Margin="0,5,0,0" />
+            </VerticalStackLayout>
+        </Grid>
+    </Shell.FlyoutFooter>
+
+    <!-- Элементы меню -->
+    <FlyoutItem Title="Мои списки" >
+        <ShellContent Route="todolists" ContentTemplate="{DataTemplate views:TodoListsPage}" />
     </FlyoutItem>
 
-    <ShellContent Route="register" ContentTemplate="{DataTemplate views:RegisterPage}" />
+    <FlyoutItem Title="Профиль">
+        <ShellContent Route="profile" ContentTemplate="{DataTemplate views:ProfilePage}" />
+    </FlyoutItem>
 
-    <ShellContent Route="todolists" ContentTemplate="{DataTemplate views:TodoListsPage}" />
+    <!-- Скрытые маршруты (не показываются в меню) -->
+    <ShellContent Route="login" 
+                  ContentTemplate="{DataTemplate views:LoginPage}" 
+                  FlyoutItemIsVisible="False" />
+
+    <ShellContent Route="register" 
+                  ContentTemplate="{DataTemplate views:RegisterPage}" 
+                  FlyoutItemIsVisible="False" />
 
     <ShellContent Route="todolistdetail" 
-              ContentTemplate="{DataTemplate views:TodoListDetailPage}" />
-
-    <ShellContent Route="profile" ContentTemplate="{DataTemplate views:ProfilePage}" />
+                  ContentTemplate="{DataTemplate views:TodoListDetailPage}" 
+                  FlyoutItemIsVisible="False" />
 
 </Shell>

@@ -12,25 +12,30 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <!-- Заголовок и кнопки -->
-        <HorizontalStackLayout Grid.Row="0"
-                               Padding="20"
-                               Spacing="10">
-            <Button Text="Назад"
-                    Command="{Binding GoBackCommand}" />
-            
-            <Label Text="{Binding ListTitle}"
-                   FontSize="24" FontAttributes="Bold"
-                   VerticalOptions="Center"
-                   HorizontalOptions="StartAndExpand" />
-            
-            <Button Text="Обновить"
-                    Command="{Binding RefreshCommand}" />
-            
-            <Button Text="+ Задача"
-                    Command="{Binding AddTaskCommand}"
-                    FontAttributes="Bold" />
-        </HorizontalStackLayout>
+        <!-- Прокручиваемая панель кнопок -->
+        <ScrollView Grid.Row="0" 
+                    Orientation="Horizontal" 
+                    HorizontalScrollBarVisibility="Never"
+                    VerticalOptions="Center">
+            <HorizontalStackLayout Padding="15"
+                                   Spacing="10"
+                                   HorizontalOptions="Start">
+
+                <Button Text="Назад"
+                        Command="{Binding GoBackCommand}"
+                        WidthRequest="80" />
+
+                <Button Text="Обновить"
+                        Command="{Binding RefreshCommand}"
+                        WidthRequest="100" />
+
+                <Button Text="+ Задача"
+                        Command="{Binding AddTaskCommand}"
+                        FontAttributes="Bold"
+                        WidthRequest="120" />
+
+            </HorizontalStackLayout>
+        </ScrollView>
 
         <!-- Список задач -->
         <CollectionView Grid.Row="1"

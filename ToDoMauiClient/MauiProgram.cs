@@ -25,6 +25,8 @@ namespace ToDoMauiClient
             // Сервисы
             builder.Services.AddSingleton<IApiService, ApiService>();
 
+            builder.Services.AddSingleton<AppShell>();
+
             // Страницы и ViewModel'ы
             builder.Services.AddTransient<LoginPage>();
             builder.Services.AddTransient<LoginViewModel>();
