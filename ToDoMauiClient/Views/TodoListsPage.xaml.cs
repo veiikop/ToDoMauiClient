@@ -21,15 +21,4 @@ public partial class TodoListsPage : ContentPage
             await vm.LoadListsAsync();
         }
     }
-
-    private async void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        if (e.CurrentSelection.FirstOrDefault() is TodoListDTO list)
-        {
-            ((CollectionView)sender).SelectedItem = null;
-
-            var route = $"//todolistdetail?listId={list.Id}";
-            await Shell.Current.GoToAsync(route);
-        }
-    }
 }

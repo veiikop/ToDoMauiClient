@@ -7,7 +7,14 @@
 
     <ScrollView>
         <VerticalStackLayout Padding="30" Spacing="20" VerticalOptions="Center">
-
+            
+            <HorizontalStackLayout HorizontalOptions="End">
+                <Button Text="Назад в списки"
+                    Command="{Binding GoBackToListsCommand}"
+                    BackgroundColor="Transparent"
+                    TextColor="Blue" />
+            </HorizontalStackLayout>
+            
             <Label Text="Ваш профиль" FontSize="32" HorizontalOptions="Center" FontAttributes="Bold" />
 
             <Label Text="{Binding User.Username, StringFormat='Имя: {0}'}" FontSize="18" />

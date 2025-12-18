@@ -57,11 +57,11 @@
                                           CommandParameter="{Binding}" />
                             </Grid.GestureRecognizers>
 
-                            <!-- Чекбокс выполненности -->
+                            <!-- Чекбокс выполненности --><!--
                             <Image Source="{Binding IsCompleted, Converter={StaticResource BoolToCheckImageConverter}}"
                        WidthRequest="30"
                        HeightRequest="30"
-                       VerticalOptions="Center" />
+                       VerticalOptions="Center" />-->
 
                             <!-- Текст задачи -->
                             <VerticalStackLayout Grid.Column="1" Spacing="5" VerticalOptions="Center">

@@ -36,21 +36,28 @@
         <!-- Список списков -->
         <CollectionView Grid.Row="1"
                 ItemsSource="{Binding TodoLists}"
-                SelectionMode="Single"
-                SelectionChanged="OnSelectionChanged">
+                SelectionMode="None">
+            <!-- Убрали SelectionMode и SelectionChanged -->
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <SwipeView>
                         <SwipeView.RightItems>
                             <SwipeItems>
-                                <SwipeItem Text="Удалить" BackgroundColor="Red"
-                                           Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TodoListsViewModel}}, Path=DeleteListCommand}"
-                                           CommandParameter="{Binding}" />
+                                <SwipeItem Text="Удалить"
+                                   BackgroundColor="Red"
+                                   Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TodoListsViewModel}}, Path=DeleteListCommand}"
+                                   CommandParameter="{Binding}" />
                             </SwipeItems>
                         </SwipeView.RightItems>
-
                         <Border Stroke="{StaticResource Primary}" StrokeThickness="1" Padding="10">
                             <Grid Padding="15" ColumnDefinitions="*,Auto">
+                                
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TodoListsViewModel}},
+                                        Path=SelectListCommand}"
+                                                  CommandParameter="{Binding}" />
+                                </Grid.GestureRecognizers>
+                                
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />

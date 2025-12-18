@@ -73,19 +73,28 @@ public partial class TodoListDetailViewModel : ObservableObject
         }
 
         IsBusy = true;
-
         try
         {
-            currentList = await _apiService.GetTodoListByIdAsync(ListId);
-            ListTitle = currentList.Title ?? "Список задач";
+            var todoList = await _apiService.GetTodoListByIdAsync(ListId);
+            if (todoList != null)
+            {
+                ListTitle = todoList.Title ?? "Список задач"; 
+            }
+            else
+            {
+                ListTitle = "Список задач (ошибка загрузки)";
+            }
             await LoadTasksAsync();
         }
-        catch
+        catch (Exception ex)
         {
-            await Application.Current?.MainPage?.DisplayAlert("Ошибка", "Некорректный ID списка", "OK");
-            return;
+            await Application.Current?.MainPage?.DisplayAlert("Ошибка", $"Не удалось загрузить список: {ex.Message}", "OK");
+            ListTitle = "Список задач (ошибка)";
         }
-        finally { IsBusy = false; }
+        finally
+        {
+            IsBusy = false;
+        }
     }
 
     private async Task LoadTasksAsync()
@@ -298,6 +307,6 @@ public partial class TodoListDetailViewModel : ObservableObject
     [RelayCommand]
     private async Task GoBack()
     {
-        await Shell.Current.GoToAsync("..");
+        await Shell.Current.GoToAsync("///todolists");
     }
 }

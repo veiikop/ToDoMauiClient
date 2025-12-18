@@ -50,4 +50,10 @@ public partial class ProfileViewModel : ObservableObject
         _apiService.ClearTokens();
         await Shell.Current.GoToAsync("///login");
     }
+
+    [RelayCommand]
+    private async Task GoBackToLists()
+    {
+        await Shell.Current.GoToAsync("///todolists");
+    }
 }

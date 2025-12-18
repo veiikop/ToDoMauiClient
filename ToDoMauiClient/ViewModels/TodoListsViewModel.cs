@@ -108,12 +108,10 @@ public partial class TodoListsViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task SelectList(object selectedItem)
+    private async Task SelectList(TodoListDTO list)
     {
-        if (selectedItem is TodoListDTO list)
-        {
-            await Shell.Current.GoToAsync($"///todolistdetail?listId={list.Id}");
-        }
+        if (list == null) return;
+        await Shell.Current.GoToAsync($"//todolistdetail?listId={list.Id}");
     }
 
     [RelayCommand]
